@@ -19,6 +19,8 @@ class Function {
         double M(const double r_p, const double v_p, const double m_p, const double T_p) const;
         double R(const double r_p, const double v_p, const double m_p, const double T_p) const;
         double T(const double r_p, const double v_p, const double m_p, const double T_p) const;
+        double b(const double r_p, const double v_p, const double m_p, const double T_p) const;
+        double tau_t(const double r_p, const double v_p, const double m_p, const double T_p) const;
 };
 
 #define _FUNCTION_H
