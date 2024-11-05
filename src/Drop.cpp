@@ -26,7 +26,8 @@ void Drop::Update()
     double m_p_old = this->_m_p;
     double T_p_old = this->_T_p;
 
-    double dt = _fct->tau_p(this->_r_p,this->_m_p);
+    // double dt = _fct->tau_p(this->_r_p,this->_m_p);
+    double dt = 1e-5;
 
     this->_x_p += dt * v_p_old;
     this->_v_p += (dt/m_p_old) * _fct->F(r_p_old,v_p_old,m_p_old);
@@ -54,7 +55,7 @@ void Drop::Save(std::string n_drop)
     std::ofstream monflux;
     monflux.open(n_file, std::ios::app);  
     if (monflux.is_open()) {
-        monflux << this->_t << " " << this->_x_p << " " << this->_v_p << " " << this->_r_p*1e6 << " " << this->_m_p << " " << this->_T_p - 273.15 << std::endl;
+        monflux << this->_t << " " << this->_x_p << " " << this->_v_p << " " << this->_r_p*1e6 << " " << this->_m_p*1e9 << " " << this->_T_p - 273.15 << std::endl;
         monflux.close();
     } else {
         std::cerr << "Erreur : impossible d'ouvrir le fichier " << n_file << std::endl;
