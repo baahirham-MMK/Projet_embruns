@@ -42,12 +42,14 @@ void Drop::Update(int cas)
         break;
     default:
         this->_x_p += dt * v_p_old;
-        this->_v_p = this->_v_p * exp(-dt/_fct->tau_p(this->_r_p)) + (_df->Get_U_air() + _df->Get_g()*_fct->tau_p(this->_r_p))
-                     *(1 - exp(-dt/_fct->tau_p(this->_r_p)) );    
+        this->_v_p = this->_v_p * exp(-dt/_fct->tau_p(this->_r_p, this->_m_p)) + (_df->Get_U_air() 
+                                                + _df->Get_g()*_fct->tau_p(this->_r_p, this->_m_p))
+                                                *(1 - exp(-dt/_fct->tau_p(this->_r_p, this->_m_p)) );    
         this->_r_p += dt * _fct->R(r_p_old,v_p_old,m_p_old,T_p_old);
         this->_m_p += dt * _fct->M(r_p_old,v_p_old,m_p_old,T_p_old);
-        //this->_T_p = this->_T_p*exp(-dt/_fct->tau_T())+b(this->_T_p)*(1 - exp(-dt/_fct->tau_T()))
-        this->_T_p += dt * _fct->T(r_p_old,v_p_old,m_p_old,T_p_old);
+        this->_T_p = this->_T_p*exp(-dt/_fct->tau_t(this->_r_p, this->_v_p, this->_m_p, this->_T_p))
+                                            +_fct->b(this->_r_p, this-> _v_p, this->_m_p, this->_T_p)
+                            *(1 - exp(-dt/_fct->tau_t(this->_r_p, this->_v_p, this->_m_p, this->_T_p)));
 
 
         break;
