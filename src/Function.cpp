@@ -78,7 +78,7 @@ double Function::T(const double r_p, const double v_p, const double m_p, const d
 
 double Function::b(const double r_p, const double v_p, const double m_p, const double T_p) const
 {   
-    double pi = 3.14159265358979323846264338327950288;
+    double pi =  std::acos(-1.0);
     double a = (_df->Get_T_air()/T_p)*std::exp((_df->Get_L_v()*_df->Get_M_w()/_df->Get_R_g())*((1.0/_df->Get_T_air())-(1.0/T_p)));
     double b = _df->Get_Q_RH() + (2.0*_df->Get_M_w()*_df->Get_Gamma_p())/(_df->Get_R_g()*_df->Get_rho_w()*r_p*T_p) - (_df->Get_I()*_df->Get_Phi_s()*_df->Get_m_s()*(_df->Get_M_w()/_df->Get_M_s()))/(m_p - _df->Get_m_s());
     double c = (4.0*pi*r_p*D_v_e(r_p,v_p)*_df->Get_M_w()*_df->Get_p_v_sat_T_air())/(_df->Get_R_g()*_df->Get_T_air());
@@ -87,7 +87,7 @@ double Function::b(const double r_p, const double v_p, const double m_p, const d
 
 double Function::tau_t(const double r_p, const double v_p, const double m_p, const double T_p) const
 {
-    double pi = 3.14159265358979323846264338327950288;
+    double pi =  std::acos(-1.0);
     return m_p*_df->Get_c_p_s()/(4*pi*r_p*k_a_e(r_p,v_p));
 }
 
