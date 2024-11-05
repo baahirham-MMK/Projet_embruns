@@ -15,6 +15,7 @@ class Drop {
         void Initialize();
         void Update();
         void Display();
+        void Save(std::string n_sol);
 };
 
 #define _DROP_H

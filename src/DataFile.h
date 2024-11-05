@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 #include <cmath>
+#include <fstream>
 // Définition de la classe
 
 class DataFile {

@@ -14,7 +14,7 @@ void Drop::Initialize()
     this->_x_p = 0.0;
     this->_v_p = 0.0;
     this->_r_p = _df->Get_r_p_0();
-    this->_m_p = (4.0/3.0)*3.14159265358979323846264338327950288*std::pow(this->_r_p,3);
+    this->_m_p = (4.0/3.0)*std::acos(-1.0)*std::pow(this->_r_p,3)*_df->Get_rho_p();
     this->_T_p = _df->Get_T_p_0();
 }
 
@@ -26,7 +26,7 @@ void Drop::Update()
     double m_p_old = this->_m_p;
     double T_p_old = this->_T_p;
 
-    double dt = 1e-15;
+    double dt = _fct->tau_p(this->_r_p,this->_m_p);
 
     this->_x_p += dt * v_p_old;
     this->_v_p += (dt/m_p_old) * _fct->F(r_p_old,v_p_old,m_p_old);
@@ -46,6 +46,21 @@ void Drop::Display()
     std::cout << "m_p = " << this->_m_p << " [kg] " << std::endl;
     std::cout << "T_p = " << this->_T_p << " [K] " << std::endl;
 }
+
+void Drop::Save(std::string n_drop)
+{
+    std::string n_file = "../res/" + n_drop + ".dat";
+    
+    std::ofstream monflux;
+    monflux.open(n_file, std::ios::app);  
+    if (monflux.is_open()) {
+        monflux << this->_t << " " << this->_x_p << " " << this->_v_p << " " << this->_r_p*1e6 << " " << this->_m_p << " " << this->_T_p - 273.15 << std::endl;
+        monflux.close();
+    } else {
+        std::cerr << "Erreur : impossible d'ouvrir le fichier " << n_file << std::endl;
+    }
+}
+
 
 #define _DATA_FILE_CPP
 #endif
