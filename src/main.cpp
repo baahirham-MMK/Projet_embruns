@@ -19,14 +19,11 @@ int main(int argc, char** argv){
     drop->Save("drop_0");
 
     for (int i = 0; i<5e7; ++i){
-        drop->Update(2);
+        drop->Update();
         if (i%10 == 0){
             drop->Display();
             drop->Save("drop_0");
         }
-    }
-    for (int i = 0; i<1e10; ++i){
-        drop->Update(2);
     }
 
     delete df, delete fct, delete drop;

@@ -13,7 +13,7 @@ class Drop {
     public: // Méthodes et opérateurs de la classe
         Drop(DataFile* df, Function* fct);
         void Initialize();
-        void Update(int cas);  // cas est la varaible de choix, Expo ou EE
+        void Update(); 
         void Display();
         void Save(std::string n_sol);
 };

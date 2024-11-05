@@ -19,7 +19,7 @@ void Drop::Initialize()
     this->_T_p = _df->Get_T_p_0();
 }
 
-void Drop::Update(int cas)
+void Drop::Update()
 {
     double x_p_old = this->_x_p;
     double v_p_old = this->_v_p;
@@ -30,7 +30,7 @@ void Drop::Update(int cas)
     // double dt = _fct->tau_p(this->_r_p,this->_m_p);
     double dt = 1e-5;
 
-    switch (cas)
+    switch (_df->Get_cas())
     {
     case 1:
         this->_x_p += dt * v_p_old;
