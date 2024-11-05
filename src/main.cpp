@@ -18,7 +18,7 @@ int main(int argc, char** argv){
     drop->Display();
 
     for (int i = 0; i<1e10; ++i){
-        drop->Update();
+        drop->Update(2);
     }
 
     drop->Display();

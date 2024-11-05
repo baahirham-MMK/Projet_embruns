@@ -1,6 +1,7 @@
 #ifndef _DROP_CPP
-
+#include <cmath>
 #include "Drop.h"
+
 
 Drop::Drop(DataFile* df, Function* fct) :
 _df(df), _fct(fct)
@@ -18,7 +19,7 @@ void Drop::Initialize()
     this->_T_p = _df->Get_T_p_0();
 }
 
-void Drop::Update()
+void Drop::Update(int cas)
 {
     double x_p_old = this->_x_p;
     double v_p_old = this->_v_p;
@@ -28,12 +29,29 @@ void Drop::Update()
 
     double dt = 1e-15;
 
-    this->_x_p += dt * v_p_old;
-    this->_v_p += (dt/m_p_old) * _fct->F(r_p_old,v_p_old,m_p_old);
-    this->_r_p += dt * _fct->R(r_p_old,v_p_old,m_p_old,T_p_old);
-    this->_m_p += dt * _fct->M(r_p_old,v_p_old,m_p_old,T_p_old);
-    this->_T_p += dt * _fct->T(r_p_old,v_p_old,m_p_old,T_p_old);
+    switch (cas)
+    {
+    case 1:
+        this->_x_p += dt * v_p_old;
+        this->_v_p += (dt/m_p_old) * _fct->F(r_p_old,v_p_old,m_p_old);
+        this->_r_p += dt * _fct->R(r_p_old,v_p_old,m_p_old,T_p_old);
+        this->_m_p += dt * _fct->M(r_p_old,v_p_old,m_p_old,T_p_old);
+        this->_T_p += dt * _fct->T(r_p_old,v_p_old,m_p_old,T_p_old);
 
+        break;
+    default:
+        this->_x_p += dt * v_p_old;
+        this->_v_p = this->_v_p * exp(-dt/_fct->tau_p(this->_r_p)) + (_df->Get_U_air() + _df->Get_g()*_fct->tau_p(this->_r_p))
+                     *(1 - exp(-dt/_fct->tau_p(this->_r_p)) );    
+        this->_r_p += dt * _fct->R(r_p_old,v_p_old,m_p_old,T_p_old);
+        this->_m_p += dt * _fct->M(r_p_old,v_p_old,m_p_old,T_p_old);
+        //this->_T_p = this->_T_p*exp(-dt/_fct->tau_T())+b(this->_T_p)*(1 - exp(-dt/_fct->tau_T()))
+        this->_T_p += dt * _fct->T(r_p_old,v_p_old,m_p_old,T_p_old);
+
+
+        break;
+    }
+    
     this->_t += dt;
 }
 
