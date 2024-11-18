@@ -42,8 +42,7 @@ void Drop::Update()
         break;
     default:
         this->_x_p += dt * v_p_old;
-        this->_v_p = this->_v_p * exp(-dt/_fct->tau_p(this->_r_p, this->_m_p)) + (_df->Get_U_air() 
-                                                + _df->Get_g()*_fct->tau_p(this->_r_p, this->_m_p))
+        this->_v_p = this->_v_p * exp(-dt/_fct->tau_p(this->_r_p, this->_m_p)) + _df->Get_U_air() 
                                                 *(1 - exp(-dt/_fct->tau_p(this->_r_p, this->_m_p)) );    
         this->_r_p += dt * _fct->R(r_p_old,v_p_old,m_p_old,T_p_old);
         this->_m_p += dt * _fct->M(r_p_old,v_p_old,m_p_old,T_p_old);
