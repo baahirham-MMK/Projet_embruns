@@ -1,4 +1,4 @@
-#include"Drop.h"
+#include"Spray.h"
 
 int main(int argc, char** argv){
 
@@ -12,21 +12,18 @@ int main(int argc, char** argv){
 
     DataFile* df = new DataFile(data_file_name);
     Function* fct = new Function(df);
-    Drop* drop = new Drop(df,fct);
+    Spray* spray = new Spray(df,fct);
 
-    drop->Initialize();
-    drop->Display();
-    drop->Save("drop_0");
-
-    for (int i = 0; i<5e7; ++i){
-        drop->Update();
-        if (i%10 == 0){
-            drop->Display();
-            drop->Save("drop_0");
-        }
+    spray->Initialize();
+    spray->Display();
+    spray->Save("spray");
+    for (int j = 0; j < 2e7; ++j){
+        spray->Update();
+        spray->Display();
+        spray->Save("spray");
     }
 
-    delete df, delete fct, delete drop;
+    delete df, delete fct, delete spray;
 
     system("gnuplot ../res/visu.gnu");
 

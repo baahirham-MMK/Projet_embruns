@@ -1,40 +1,32 @@
-# Premier graphique : vitesse et température
 set terminal pngcairo size 800,600
-set output '../res/graph_vitesse_temperature.png'
-
-# Configuration des axes
+set output '../res/graph_vitesse.png'
 set xlabel "Temps (t)"
 set ylabel "Vitesse (v) [m/s]"
 set logscale x  # Echelle logarithmique pour l'axe x (temps)
+plot "../res/spray.dat" using 1:3 with lines title "v(t) [m/s]"
 
-# Définir l'axe secondaire pour la température
-set y2label "Température (T) [°C]"
-set y2range [14:21]  # Plage de température
-set y2tics 1  # Espacement des tics pour la température
+set output
 
-# Tracer les courbes de vitesse et température
-plot "../res/drop_0.dat" using 1:3 with lines title "v(t) [m/s]", "../res/drop_0.dat" using 1:6 axes x1y2 with lines title "T(t) [°C]"
-
-# Réinitialiser la sortie PNG pour le second graphique
-set output  # Annuler la sortie PNG en cours
-
-# Deuxième graphique : rayon et masse
-set terminal pngcairo size 800,600
-set output '../res/graph_rayon_masse.png'
-
-# Configuration des axes
+set terminal png size 800,600
+set output '../res/temperature.png'
 set xlabel "Temps (t)"
 set ylabel "Rayon (r) [µm]"
+plot "../res/spray.dat" using 1:6 with lines title "T(t) [°C]"
 
-set yrange [40:110]
+set output  
 
-# Réinitialiser les axes secondaires pour le second graphique
-set y2label "Masse (m) [1e-9 kg]"
-set y2range [0:5]  
-set y2tics 0.5  
+set terminal pngcairo size 800,600
+set output '../res/graph_rayon.png'
+set xlabel "Temps (t)"
+set ylabel "Rayon (r) [µm]"
+plot "../res/spray.dat" using 1:4 with lines title "r(t) [µm]"
 
-# Tracer les courbes de rayon et masse
-plot "../res/drop_0.dat" using 1:4 with lines title "r(t) [µm]", "../res/drop_0.dat" using 1:5 axes x1y2 with lines title "m(t) [kg]"
+set output  
 
-# Réinitialiser la sortie PNG en cours (non nécessaire ici, mais pour la propreté du code)
+set terminal pngcairo size 800,600
+set output '../res/graph_masse.png'
+set xlabel "Temps (t)"
+set ylabel "Masse (m) [1e-9 kg]"
+plot "../res/spray.dat" using 1:5 with lines title "m(t) [kg]"
+
 set output

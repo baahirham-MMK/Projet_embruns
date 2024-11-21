@@ -23,5 +23,7 @@ class Function {
         double tau_t(const double r_p, const double v_p, const double m_p, const double T_p) const;
 };
 
+void charge(int Me, int N, int Np, int &iBeg, int &iEnd);
+
 #define _FUNCTION_H
 #endif
