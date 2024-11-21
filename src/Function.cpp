@@ -91,5 +91,16 @@ double Function::tau_t(const double r_p, const double v_p, const double m_p, con
     return m_p*_df->Get_c_p_s()/(4*pi*r_p*k_a_e(r_p,v_p));
 }
 
+void charge(int Me, int N, int Np, int &iBeg, int &iEnd){
+    // Fonction charge
+    if (Me < N%Np){
+        iBeg = (N/Np+1)*Me;
+        iEnd = (N/Np+1)*(Me+1) - 1;
+    }else{
+        iBeg = N%Np*(N/Np+1) + (Me - N%Np)*(N/Np);
+        iEnd = iBeg + N/Np - 1;
+    }
+}
+
 #define _FUNCTION_CPP
 #endif
