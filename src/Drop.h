@@ -16,6 +16,12 @@ class Drop {
         void Update(); 
         void Display();
         void Save(std::string n_sol);
+        const double Get_t() const {return _t;};
+        const double Get_x_p() const {return _x_p;};
+        const double Get_v_p() const {return _v_p;};
+        const double Get_m_p() const {return _m_p;};
+        const double Get_r_p() const {return _r_p;};
+        const double Get_T_p() const {return _T_p;};
 };
 
 #define _DROP_H

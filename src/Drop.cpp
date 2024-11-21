@@ -1,5 +1,4 @@
 #ifndef _DROP_CPP
-#include <cmath>
 #include "Drop.h"
 
 
@@ -11,11 +10,14 @@ _df(df), _fct(fct)
 
 void Drop::Initialize()
 {
+    std::random_device rd;
+    std :: default_random_engine seed(rd());
+    std::uniform_real_distribution<double> u1{0.5, 1.0}, u2{0.5, 1.0};
     this->_t = 0.0;
     this->_x_p = 0.0;
     this->_v_p = 0.0;
-    this->_r_p = _df->Get_r_p_0();
-    this->_m_p = (4.0/3.0)*std::acos(-1.0)*std::pow(this->_r_p,3)*_df->Get_rho_p();
+    this->_r_p = _df->Get_r_p_0()*u1(seed);
+    this->_m_p = (4.0/3.0)*std::acos(-1.0)*std::pow(this->_r_p,3)*_df->Get_rho_p()*u2(seed);
     this->_T_p = _df->Get_T_p_0();
 }
 
