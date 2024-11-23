@@ -16,6 +16,7 @@ class Drop {
         void Update(); 
         void Display();
         void Save(std::string n_sol);
+        const double Get_t() const {return _t;};
 };
 
 #define _DROP_H

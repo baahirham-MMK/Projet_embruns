@@ -35,6 +35,7 @@ DataFile::DataFile(std::string file_name)
    this->_alpha_T = toml::find<double>(parameter, "alpha_T");
    this->_I = toml::find<int>(parameter, "I");
    this->_cas = toml::find<int>(parameter, "cas");
+   this->_T_f = toml::find<int>(parameter, "T_f");
 } 
 
 #define _DATA_FILE_CPP

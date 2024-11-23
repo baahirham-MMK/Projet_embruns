@@ -27,8 +27,25 @@ void Drop::Update()
     double m_p_old = this->_m_p;
     double T_p_old = this->_T_p;
 
-    // double dt = _fct->tau_p(this->_r_p,this->_m_p);
-    double dt = 1e-5;
+    //double dt = _fct->tau_p(this->_r_p,this->_m_p);
+    double dt;
+    if(this->_t < 1e-4)
+    {
+        dt = 1e-5;
+    }
+    else if(this->_t < 1e-3)
+    {
+        dt = 1e-4;
+    }
+    else if(this->_t < 1e-2)
+    {
+        dt = 1e-3;
+    }
+    else
+    {
+        dt = 1e-2;
+    }
+
 
     switch (_df->Get_cas())
     {

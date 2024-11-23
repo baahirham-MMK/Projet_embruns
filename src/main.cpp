@@ -18,12 +18,24 @@ int main(int argc, char** argv){
     drop->Display();
     drop->Save("drop_0");
 
-    for (int i = 0; i<5e7; ++i){
+    // for (int i = 0; i<5e7; ++i){
+    //     drop->Update();
+    //     if (i%10 == 0){
+    //         drop->Display();
+    //         drop->Save("drop_0");
+    //     }
+    // }
+
+    int i = 0;
+    while(drop->Get_t() < df->Get_T_f())
+    {
         drop->Update();
-        if (i%10 == 0){
-            drop->Display();
-            drop->Save("drop_0");
-        }
+        //if (i%10 == 0)
+        //{
+        //drop->Display();
+        drop->Save("drop_0");
+        //}
+        i += 1;
     }
 
     delete df, delete fct, delete drop;

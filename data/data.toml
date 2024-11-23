@@ -16,5 +16,6 @@ Delta_v = 8e-8
 alpha_c = 0.06
 Delta_T = 2.16e-7
 alpha_T = 0.7
+T_f = 500
 I = 2
 cas = 2
