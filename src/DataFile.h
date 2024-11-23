@@ -5,6 +5,8 @@
 #include <iostream>
 #include <cmath>
 #include <fstream>
+#include <stdlib.h>
+#include <random>
 // Définition de la classe
 
 class DataFile {
@@ -12,7 +14,7 @@ class DataFile {
    private:
       const std::string _file_name;
       double _U_air, _T_air_celcius, _T_p_0_celcius, _Q_RH, _g, _M_w, _M_s, _M_a, _R_g, _Salinity_w, _Salinity_p, _p_0;
-      double _r_p_0, _Delta_v, _alpha_c, _Delta_T, _alpha_T, _T_f;
+      double _r_p_0, _Delta_v, _alpha_c, _Delta_T, _alpha_T, _T_f, _L;
       int _I, _cas;
       // double _nu_air, _D_v, _alpha_c, _Delta_v, _rho_v_sat, _L_v, _Gamma_p, _I, _Phi_s, _c_p_s, _rho_v, _Delta_t, _alpha_t, _c_p_a, _rho_a;
 
@@ -61,7 +63,9 @@ class DataFile {
    const double Get_rho_air_sec() const {return 1.2929*273.13/Get_T_air();};
    const int Get_cas() const {return _cas;};
    const double Get_T_f() const {return _T_f;};
+   const double Get_L() const {return _L;};
 };
+
 
 #define _DATA_FILE_H
 #endif

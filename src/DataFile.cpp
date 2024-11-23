@@ -2,9 +2,6 @@
 
 #include "DataFile.h"
 #include "../data/toml.hpp"
-#include <fstream>
-#include <iostream>
-#include <cmath>
 
 using namespace std;
 
@@ -35,7 +32,8 @@ DataFile::DataFile(std::string file_name)
    this->_alpha_T = toml::find<double>(parameter, "alpha_T");
    this->_I = toml::find<int>(parameter, "I");
    this->_cas = toml::find<int>(parameter, "cas");
-   this->_T_f = toml::find<int>(parameter, "T_f");
+   this->_T_f = toml::find<double>(parameter, "T_f");
+   this->_L = toml::find<double>(parameter, "L");
 } 
 
 #define _DATA_FILE_CPP

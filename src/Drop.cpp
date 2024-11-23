@@ -1,5 +1,4 @@
 #ifndef _DROP_CPP
-#include <cmath>
 #include "Drop.h"
 
 
@@ -11,10 +10,13 @@ _df(df), _fct(fct)
 
 void Drop::Initialize()
 {
+    std::random_device rd;
+    std :: default_random_engine seed(rd());
+    std::uniform_real_distribution<double> u1{0, _df->Get_L()}, u2{1e-6, 1e-3};
     this->_t = 0.0;
-    this->_x_p = 0.0;
+    this->_x_p = u1(seed);
     this->_v_p = 0.0;
-    this->_r_p = _df->Get_r_p_0();
+    this->_r_p = u2(seed);
     this->_m_p = (4.0/3.0)*std::acos(-1.0)*std::pow(this->_r_p,3)*_df->Get_rho_p();
     this->_T_p = _df->Get_T_p_0();
 }
@@ -29,21 +31,22 @@ void Drop::Update()
 
     //double dt = _fct->tau_p(this->_r_p,this->_m_p);
     double dt;
+    //dt = 1e-5;
     if(this->_t < 1e-4)
     {
         dt = 1e-5;
     }
-    else if(this->_t < 1e-3)
-    {
-        dt = 1e-4;
-    }
-    else if(this->_t < 1e-2)
-    {
-        dt = 1e-3;
-    }
+    // else if(this->_t < 1e-3)
+    // {
+    //     dt = 1e-4;
+    // }
+    // else if(this->_t < 1e-2)
+    // {
+    //     dt = 1e-3;
+    // }
     else
     {
-        dt = 1e-2;
+        dt = 1e-4;
     }
 
 
@@ -69,6 +72,11 @@ void Drop::Update()
 
 
         break;
+    }
+
+    if(this->_x_p > _df->Get_L())
+    {
+       this->_x_p -= _df->Get_L();
     }
     
     this->_t += dt;
