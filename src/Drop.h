@@ -8,7 +8,7 @@ class Drop {
     private:
         const DataFile* _df;
         const Function* _fct;
-        double _t, _x_p, _v_p, _m_p, _r_p, _T_p;
+        double _t, _x_p, _v_p, _m_p, _m_s, _r_p, _T_p;
 
     public: // Méthodes et opérateurs de la classe
         Drop(DataFile* df, Function* fct);
@@ -20,6 +20,7 @@ class Drop {
         const double Get_x_p() const {return _x_p;};
         const double Get_v_p() const {return _v_p;};
         const double Get_m_p() const {return _m_p;};
+        const double Get_m_s() const {return _m_s;};
         const double Get_r_p() const {return _r_p;};
         const double Get_T_p() const {return _T_p;};
 };

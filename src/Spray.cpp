@@ -29,6 +29,7 @@ void Spray::Initialize()
     for (int i = 0; i < _df->Get_N(); ++i) {
         this->_spray[i] = new Drop(this->_df, this->_fct);
         this->_spray[i]->Initialize();
+        this->_spray[i]->Display();
         this->_t += this->_spray[i]->Get_t();
         this->_x_p_m += this->_spray[i]->Get_x_p();
         this->_v_p_m += this->_spray[i]->Get_v_p();
@@ -64,11 +65,11 @@ void Spray::Update()
         this->_T_p_m += this->_spray[i]->Get_T_p();
     }
     this->_t *= (1./_df->Get_N());
-    this->_x_p_m *= (1./_df->Get_N());
-    this->_v_p_m *= (1./_df->Get_N());
-    this->_r_p_m *= (1./_df->Get_N());
-    this->_m_p_m *= (1./_df->Get_N());
-    this->_T_p_m *= (1./_df->Get_N());
+    this->_x_p_m *= (1./double(_df->Get_N()));
+    this->_v_p_m *= (1./double(_df->Get_N()));
+    this->_r_p_m *= (1./double(_df->Get_N()));
+    this->_m_p_m *= (1./double(_df->Get_N()));
+    this->_T_p_m *= (1./double(_df->Get_N()));
 }
 
 void Spray::Display()
