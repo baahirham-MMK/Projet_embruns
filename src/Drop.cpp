@@ -12,12 +12,13 @@ void Drop::Initialize()
 {
     std::random_device rd;
     std :: default_random_engine seed(rd());
-    std::uniform_real_distribution<double> u1{0.5, 1.0}, u2{0.5, 1.0};
+    std::uniform_real_distribution<double> u1{0, _df->Get_L()}, u2{1e-4, 1e-3};
     this->_t = 0.0;
-    this->_x_p = 0.0;
+    this->_x_p = u1(seed);
     this->_v_p = 0.0;
-    this->_r_p = _df->Get_r_p_0()*u1(seed);
-    this->_m_p = (4.0/3.0)*std::acos(-1.0)*std::pow(this->_r_p,3)*_df->Get_rho_p()*u2(seed);
+    this->_r_p = _fct->acceptation_rejet(seed);
+    this->_m_p = (4.0/3.0)*std::acos(-1.0)*std::pow(this->_r_p,3)*_df->Get_rho_p();
+    this->_m_s = (4.0/3.0)*std::acos(-1.0)*std::pow(this->_r_p,3)*_df->Get_rho_p()*_df->Get_Salinity_p()/1000.0;
     this->_T_p = _df->Get_T_p_0();
 }
 
@@ -29,32 +30,49 @@ void Drop::Update()
     double m_p_old = this->_m_p;
     double T_p_old = this->_T_p;
 
-    // double dt = _fct->tau_p(this->_r_p,this->_m_p);
-    double dt = 1e-5;
+    //double dt = _fct->tau_p(this->_r_p,this->_m_p);
+    double dt;
+    if(this->_t < 2e-4)
+    {
+        dt = 1e-5;
+    }
+    else if(this->_t < 2e-3)
+    {
+        dt = 1e-4;
+    }
+    else
+    {
+        dt = 2e-3;
+    }
 
     switch (_df->Get_cas())
     {
     case 1:
-        this->_x_p += dt * v_p_old;
+        if (this->_x_p <= _df->Get_L()) this->_x_p += dt * v_p_old;
+        else this->_x_p = 0.0;
         this->_v_p += (dt/m_p_old) * _fct->F(r_p_old,v_p_old,m_p_old);
-        this->_r_p += dt * _fct->R(r_p_old,v_p_old,m_p_old,T_p_old);
-        this->_m_p += dt * _fct->M(r_p_old,v_p_old,m_p_old,T_p_old);
-        this->_T_p += dt * _fct->T(r_p_old,v_p_old,m_p_old,T_p_old);
+        this->_r_p += dt * _fct->R(r_p_old,v_p_old,m_p_old,this->_m_s,T_p_old);
+        this->_m_p += dt * _fct->M(r_p_old,v_p_old,m_p_old, this->_m_s,T_p_old);
+        this->_T_p += dt * _fct->T(r_p_old,v_p_old,m_p_old,this->_m_s,T_p_old);
 
         break;
     default:
         this->_x_p += dt * v_p_old;
-        this->_v_p = this->_v_p * exp(-dt/_fct->tau_p(this->_r_p, this->_m_p)) + (_df->Get_U_air() 
-                                                + _df->Get_g()*_fct->tau_p(this->_r_p, this->_m_p))
+        this->_v_p = this->_v_p * exp(-dt/_fct->tau_p(this->_r_p, this->_m_p)) + _df->Get_U_air() 
                                                 *(1 - exp(-dt/_fct->tau_p(this->_r_p, this->_m_p)) );    
-        this->_r_p += dt * _fct->R(r_p_old,v_p_old,m_p_old,T_p_old);
-        this->_m_p += dt * _fct->M(r_p_old,v_p_old,m_p_old,T_p_old);
+        this->_r_p += dt * _fct->R(r_p_old,v_p_old,m_p_old,this->_m_s,T_p_old);
+        this->_m_p += dt * _fct->M(r_p_old,v_p_old,m_p_old,this->_m_s,T_p_old);
         this->_T_p = this->_T_p*exp(-dt/_fct->tau_t(this->_r_p, this->_v_p, this->_m_p, this->_T_p))
-                                            +_fct->b(this->_r_p, this-> _v_p, this->_m_p, this->_T_p)
+                                            +_fct->b(this->_r_p, this-> _v_p, this->_m_p, this->_m_s, this->_T_p)
                             *(1 - exp(-dt/_fct->tau_t(this->_r_p, this->_v_p, this->_m_p, this->_T_p)));
 
 
         break;
+    }
+
+    if(this->_x_p > _df->Get_L())
+    {
+       this->_x_p -= _df->Get_L();
     }
     
     this->_t += dt;

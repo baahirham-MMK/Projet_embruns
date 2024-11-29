@@ -17,10 +17,16 @@ int main(int argc, char** argv){
     spray->Initialize();
     spray->Display();
     spray->Save("spray");
-    for (int j = 0; j < 2e7; ++j){
+
+    int i = 0;
+    while(spray->Get_t_m() < df->Get_T_f())
+    {
         spray->Update();
-        spray->Display();
+        //spray->Display();
+
         spray->Save("spray");
+        i += 1;
+        //printf("iteration=%d\n",i);
     }
 
     delete df, delete fct, delete spray;
