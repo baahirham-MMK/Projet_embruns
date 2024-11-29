@@ -22,11 +22,7 @@ int main(int argc, char** argv){
     while(spray->Get_t_m() < df->Get_T_f())
     {
         spray->Update();
-        //spray->Display();
-
         spray->Save("spray");
-        i += 1;
-        //printf("iteration=%d\n",i);
     }
 
     delete df, delete fct, delete spray;

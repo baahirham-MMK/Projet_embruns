@@ -10,7 +10,7 @@ class Function {
     public: // Méthodes et opérateurs de la classe
         Function(DataFile* df);
         double Re_p(const double r_p, const double v_p) const;
-        double tau_p(const double r_p, const double m_p) const; //Masse volumique constante ???
+        double tau_p(const double r_p, const double m_p) const; 
         double F(const double r_p, const double v_p, const double m_p) const;
         double f_v(const double r_p, const double v_p) const;
         double f_h(const double r_p, const double v_p) const;
