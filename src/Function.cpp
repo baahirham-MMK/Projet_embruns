@@ -79,7 +79,7 @@ double Function::T(const double r_p, const double v_p, const double m_p, const d
 double Function::b(const double r_p, const double v_p, const double m_p, const double m_s, const double T_p) const
 {   
     double pi =  std::acos(-1.0);
-    return _df->Get_T_air() + (_df->Get_L_v()*M(r_p,v_p,m_p,T_p)/(4*pi*r_p*k_a_e(r_p,v_p)));
+    return _df->Get_T_air() + (_df->Get_L_v()*M(r_p,v_p,m_p,m_s,T_p)/(4*pi*r_p*k_a_e(r_p,v_p)));
 }
 
 double Function::tau_t(const double r_p, const double v_p, const double m_p, const double T_p) const
@@ -204,6 +204,24 @@ double Function::acceptation_rejet(std::default_random_engine& seed) const {
     }
 
     return y;
+}
+
+double Function::rho_0() const 
+{
+    double dlogr = 0.1;
+    double ri = 1e-6;
+    double rho_0 = 0;
+    int i = 1;
+    while(ri<=1e-3)
+    {
+        //printf("ri = %lf, dri = %lf\n",ri,ri*(pow(10,dlogr)-1));
+        rho_0 += ri*(pow(10,dlogr)-1)*dCd_r(dFdr(ri),Vdp(ri))*((4.0/3.0)*std::acos(-1.0)*std::pow(ri,3)*_df->Get_rho_p());
+        ri = pow(10,-6+(i*dlogr));
+        i += 1;
+    }
+
+    printf("rho_0=%lf\n",rho_0);
+    return rho_0;
 }
 
 #define _FUNCTION_CPP

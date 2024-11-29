@@ -25,7 +25,7 @@ void Spray::Initialize()
     this->_m_p_m = 0.0;
     this->_T_p_m = 0.0;
 
-    double Mtot = _df->Get_rho_p()*pow(_df->Get_L(),3);
+    double Mtot = _fct->rho_0()*pow(_df->Get_L(),3);
     int N;
 
     while(_m_p_m < Mtot) 
@@ -33,7 +33,7 @@ void Spray::Initialize()
         this->_spray.push_back(new Drop(this->_df, this->_fct));
         N = this->_spray.size();
         this->_spray[N-1]->Initialize();
-        this->_t += this->_spray[N-1]->Get_t();
+        this->_t_m += this->_spray[N-1]->Get_t();
         this->_x_p_m += this->_spray[N-1]->Get_x_p();
         this->_v_p_m += this->_spray[N-1]->Get_v_p();
         this->_r_p_m += this->_spray[N-1]->Get_r_p();
@@ -41,7 +41,7 @@ void Spray::Initialize()
         this->_T_p_m += this->_spray[N-1]->Get_T_p();
     }
     printf("Nombre de goutte : %d\n",N);
-    this->_t *= (1./double(N));
+    this->_t_m *= (1./double(N));
     this->_x_p_m *= (1./double(N));
     this->_v_p_m *= (1./double(N));
     this->_r_p_m *= (1./double(N));
@@ -70,7 +70,7 @@ void Spray::Update()
         this->_m_p_m += this->_spray[i]->Get_m_p();
         this->_T_p_m += this->_spray[i]->Get_T_p();
     }
-    this->_t *= (1./double(N));
+    this->_t_m *= (1./double(N));
     this->_x_p_m *= (1./double(N));
     this->_v_p_m *= (1./double(N));
     this->_r_p_m *= (1./double(N));
@@ -99,21 +99,6 @@ void Spray::Save(std::string n_drop)
         monflux.close();
     } else {
         std::cerr << "Erreur : impossible d'ouvrir le fichier " << n_file << std::endl;
-    }
-
-    if(this->_t <= 5)
-    {    
-        std::ofstream monflux;
-        monflux.open("../res/init.dat", std::ios::app);  
-        if (monflux.is_open()) {
-            for (int i=0;i<this->_spray.size();i++)
-            {
-                monflux << _t << " " << this->_spray[i]->Get_x_p() << " " << this->_spray[i]->Get_v_p()<< " " << this->_spray[i]->Get_r_p() << " " << this->_spray[i]->Get_m_p()<< " " << this->_spray[i]->Get_T_p() - 273.15 << std::endl;
-            }
-            monflux.close();
-        } else {
-            std::cerr << "Erreur : impossible d'ouvrir le fichier " << n_file << std::endl;
-        }
     }
 }
 

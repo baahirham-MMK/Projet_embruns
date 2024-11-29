@@ -40,13 +40,9 @@ void Drop::Update()
     {
         dt = 1e-4;
     }
-    else if(this->_t < 10)
-    {
-        dt = 1e-3;
-    }
     else
     {
-        dt = 1e-2;
+        dt = 2e-3;
     }
 
     switch (_df->Get_cas())
