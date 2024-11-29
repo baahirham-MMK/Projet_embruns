@@ -26,6 +26,7 @@ int main(int argc, char** argv){
 
         spray->Save("spray");
         i += 1;
+        printf("iteration=%d\n",i);
     }
 
     delete df, delete fct, delete spray;

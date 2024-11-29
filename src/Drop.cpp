@@ -12,7 +12,7 @@ void Drop::Initialize()
 {
     std::random_device rd;
     std :: default_random_engine seed(rd());
-    std::uniform_real_distribution<double> u1{0, _df->Get_L()}, u2{1e-6, 1e-3};
+    std::uniform_real_distribution<double> u1{0, _df->Get_L()}, u2{1e-4, 1e-3};
     this->_t = 0.0;
     this->_x_p = u1(seed);
     this->_v_p = 0.0;
@@ -31,24 +31,22 @@ void Drop::Update()
 
     //double dt = _fct->tau_p(this->_r_p,this->_m_p);
     double dt;
-    //dt = 1e-5;
-    if(this->_t < 1e-4)
+    if(this->_t < 2e-4)
     {
         dt = 1e-5;
     }
-    // else if(this->_t < 1e-3)
-    // {
-    //     dt = 1e-4;
-    // }
-    // else if(this->_t < 1e-2)
-    // {
-    //     dt = 1e-3;
-    // }
-    else
+    else if(this->_t < 2e-3)
     {
         dt = 1e-4;
     }
-
+    else if(this->_t < 10)
+    {
+        dt = 1e-3;
+    }
+    else
+    {
+        dt = 1e-2;
+    }
 
     switch (_df->Get_cas())
     {

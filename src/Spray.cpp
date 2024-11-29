@@ -101,14 +101,14 @@ void Spray::Save(std::string n_drop)
         std::cerr << "Erreur : impossible d'ouvrir le fichier " << n_file << std::endl;
     }
 
-    if(this->_t == 0.0)
+    if(this->_t <= 5)
     {    
         std::ofstream monflux;
         monflux.open("../res/init.dat", std::ios::app);  
         if (monflux.is_open()) {
             for (int i=0;i<this->_spray.size();i++)
             {
-                monflux << this->_spray[i]->Get_x_p() << " " << this->_spray[i]->Get_v_p()<< " " << this->_spray[i]->Get_r_p() << " " << this->_spray[i]->Get_m_p()<< " " << this->_spray[i]->Get_T_p() - 273.15 << std::endl;
+                monflux << _t << " " << this->_spray[i]->Get_x_p() << " " << this->_spray[i]->Get_v_p()<< " " << this->_spray[i]->Get_r_p() << " " << this->_spray[i]->Get_m_p()<< " " << this->_spray[i]->Get_T_p() - 273.15 << std::endl;
             }
             monflux.close();
         } else {
