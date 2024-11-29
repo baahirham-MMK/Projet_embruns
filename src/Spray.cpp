@@ -43,7 +43,7 @@ void Spray::Initialize()
         this->_T_p_m += this->_spray[N-1]->Get_T_p();
         MPI_Allreduce(&this->_m_p_m, &m_p_tot, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     }
-    // printf("Me = %d, Nombre de goutte : %d\n", Me, N);
+    printf("Me = %d, Nombre de goutte : %d\n", Me, N);
     // printf("Me = %d, Mtot = %e, m_p_tot = %e\n", Me, Mtot, m_p_tot);
 
     this->_t_m *= (1./double(N));
