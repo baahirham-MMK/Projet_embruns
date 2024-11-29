@@ -27,6 +27,7 @@ class Function {
         double dCd_r(const double dFdr, const double Vdp) const;
         double normalised_N_r(const double dCdr) const;
         double acceptation_rejet(std::default_random_engine& seed) const;
+        double rho_0() const;
 };
 
 void charge(int Me, int N, int Np, int &iBeg, int &iEnd);

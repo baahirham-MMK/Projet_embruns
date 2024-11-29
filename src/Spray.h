@@ -18,6 +18,7 @@ class Spray {
         void Update(); 
         void Display();
         void Save(std::string n_sol);
+        const double Get_t_m() const {return _t_m;};
 };
 
 #define _SPRAY_H

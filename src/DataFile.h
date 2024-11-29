@@ -16,10 +16,9 @@ class DataFile {
    private:
       const std::string _file_name;
       double _U_air, _T_air_celcius, _T_p_0_celcius, _Q_RH, _g, _M_w, _M_s, _M_a, _R_g, _Salinity_w, _Salinity_p, _p_0;
-      double _Delta_v, _alpha_c, _Delta_T, _alpha_T;
-      int _I, _cas, _N;
-      double _L;
-     
+      double _Delta_v, _alpha_c, _Delta_T, _alpha_T, _T_f, _L;
+      int _I, _cas;
+
    public: // Méthodes et opérateurs de la classe
    DataFile(std::string file_name);
    const double Get_U_air() const {return _U_air;};
@@ -62,7 +61,7 @@ class DataFile {
    const double Get_c_p_air_sec() const {return 1.9327e-10*std::pow(Get_T_p_0(),4)-7.9999e-7*std::pow(Get_T_p_0(),3)+1.1407e-3*std::pow(Get_T_p_0(),2)-4.4890e-1*Get_T_p_0()+1.0575e+3;};
    const double Get_rho_air_sec() const {return 1.2929*273.13/Get_T_air();};
    const int Get_cas() const {return _cas;};
-   const int Get_N() const {return _N;};
+   const double Get_T_f() const {return _T_f;};
    const double Get_L() const {return _L;};
 };
 

@@ -30,8 +30,20 @@ void Drop::Update()
     double m_p_old = this->_m_p;
     double T_p_old = this->_T_p;
 
-    double dt = 1e-5;
-    // double dt = std::min(1e-5, std::min(_fct->tau_p(this->_r_p,this->_m_p), _fct->tau_t(this->_r_p, this->_v_p, this->_m_p, this->_T_p)));
+    //double dt = _fct->tau_p(this->_r_p,this->_m_p);
+    double dt;
+    if(this->_t < 2e-4)
+    {
+        dt = 1e-5;
+    }
+    else if(this->_t < 2e-3)
+    {
+        dt = 1e-4;
+    }
+    else
+    {
+        dt = 2e-3;
+    }
 
     switch (_df->Get_cas())
     {
@@ -46,8 +58,7 @@ void Drop::Update()
         break;
     default:
         this->_x_p += dt * v_p_old;
-        this->_v_p = this->_v_p * exp(-dt/_fct->tau_p(this->_r_p, this->_m_p)) + (_df->Get_U_air() 
-                                                + _df->Get_g()*_fct->tau_p(this->_r_p, this->_m_p))
+        this->_v_p = this->_v_p * exp(-dt/_fct->tau_p(this->_r_p, this->_m_p)) + _df->Get_U_air() 
                                                 *(1 - exp(-dt/_fct->tau_p(this->_r_p, this->_m_p)) );    
         this->_r_p += dt * _fct->R(r_p_old,v_p_old,m_p_old,this->_m_s,T_p_old);
         this->_m_p += dt * _fct->M(r_p_old,v_p_old,m_p_old,this->_m_s,T_p_old);
@@ -57,6 +68,11 @@ void Drop::Update()
 
 
         break;
+    }
+
+    if(this->_x_p > _df->Get_L())
+    {
+       this->_x_p -= _df->Get_L();
     }
     
     this->_t += dt;

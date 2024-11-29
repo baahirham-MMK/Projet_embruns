@@ -15,14 +15,18 @@ int main(int argc, char** argv){
     Spray* spray = new Spray(df,fct);
 
     spray->Initialize();
-    // spray->Display();
+    spray->Display();
     spray->Save("spray");
-    for (int j = 0; j < 5e7; ++j){
+
+    int i = 0;
+    while(spray->Get_t_m() < df->Get_T_f())
+    {
         spray->Update();
-        if (j%10 == 0){
-            // spray->Display();
-            spray->Save("spray");
-        }
+        //spray->Display();
+
+        spray->Save("spray");
+        i += 1;
+        //printf("iteration=%d\n",i);
     }
 
     delete df, delete fct, delete spray;

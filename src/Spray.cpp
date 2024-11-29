@@ -9,7 +9,8 @@ _df(df), _fct(fct)
 } 
 
 Spray::~Spray(){
-    for (int i = 0; i < _df->Get_N(); ++i){
+    int N = this->_spray.size();
+    for (int i = 0; i < N; ++i){
         delete this->_spray[i];
     }
 }
@@ -24,25 +25,28 @@ void Spray::Initialize()
     this->_m_p_m = 0.0;
     this->_T_p_m = 0.0;
 
-    this->_spray.resize(_df->Get_N());
+    double Mtot = _fct->rho_0()*pow(_df->Get_L(),3);
+    int N;
 
-    for (int i = 0; i < _df->Get_N(); ++i) {
-        this->_spray[i] = new Drop(this->_df, this->_fct);
-        this->_spray[i]->Initialize();
-        this->_spray[i]->Display();
-        this->_t_m += this->_spray[i]->Get_t();
-        this->_x_p_m += this->_spray[i]->Get_x_p();
-        this->_v_p_m += this->_spray[i]->Get_v_p();
-        this->_r_p_m += this->_spray[i]->Get_r_p();
-        this->_m_p_m += this->_spray[i]->Get_m_p();
-        this->_T_p_m += this->_spray[i]->Get_T_p();
+    while(_m_p_m < Mtot) 
+    {
+        this->_spray.push_back(new Drop(this->_df, this->_fct));
+        N = this->_spray.size();
+        this->_spray[N-1]->Initialize();
+        this->_t_m += this->_spray[N-1]->Get_t();
+        this->_x_p_m += this->_spray[N-1]->Get_x_p();
+        this->_v_p_m += this->_spray[N-1]->Get_v_p();
+        this->_r_p_m += this->_spray[N-1]->Get_r_p();
+        this->_m_p_m += this->_spray[N-1]->Get_m_p();
+        this->_T_p_m += this->_spray[N-1]->Get_T_p();
     }
-    this->_t_m /= double(_df->Get_N());
-    this->_x_p_m /= double(_df->Get_N());
-    this->_v_p_m /= double(_df->Get_N());
-    this->_r_p_m /= double(_df->Get_N());
-    this->_m_p_m /= double(_df->Get_N());
-    this->_T_p_m /= double(_df->Get_N());
+    printf("Nombre de goutte : %d\n",N);
+    this->_t_m *= (1./double(N));
+    this->_x_p_m *= (1./double(N));
+    this->_v_p_m *= (1./double(N));
+    this->_r_p_m *= (1./double(N));
+    this->_m_p_m *= (1./double(N));
+    this->_T_p_m *= (1./double(N));
 }
 
 void Spray::Update()
@@ -54,8 +58,10 @@ void Spray::Update()
     this->_r_p_m = 0.0;
     this->_m_p_m = 0.0;
     this->_T_p_m = 0.0;
+    int N = this->_spray.size();
     
-    for (int i = 0; i < _df->Get_N(); ++i) {
+    for (int i = 0; i < N; ++i) 
+    {
         this->_spray[i]->Update();
         this->_t_m += this->_spray[i]->Get_t();
         this->_x_p_m += this->_spray[i]->Get_x_p();
@@ -64,12 +70,12 @@ void Spray::Update()
         this->_m_p_m += this->_spray[i]->Get_m_p();
         this->_T_p_m += this->_spray[i]->Get_T_p();
     }
-    this->_t_m /= double(_df->Get_N());
-    this->_x_p_m /= double(_df->Get_N());
-    this->_v_p_m /= double(_df->Get_N());
-    this->_r_p_m /= double(_df->Get_N());
-    this->_m_p_m /= double(_df->Get_N());
-    this->_T_p_m /= double(_df->Get_N());
+    this->_t_m *= (1./double(N));
+    this->_x_p_m *= (1./double(N));
+    this->_v_p_m *= (1./double(N));
+    this->_r_p_m *= (1./double(N));
+    this->_m_p_m *= (1./double(N));
+    this->_T_p_m *= (1./double(N));
 }
 
 void Spray::Display()
