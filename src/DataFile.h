@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <random>
 #include <algorithm>
+#include <mpi.h>
 
 // Définition de la classe
 

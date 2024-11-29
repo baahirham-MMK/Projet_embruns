@@ -222,7 +222,7 @@ double Function::rho_0() const
         r_ip1 = (start * std::pow(factor, i+1));
         rho_0 += (r_ip1-r_i)*dCd_r(dFdr(r_i),Vdp(r_i))*((4.0/3.0)*std::acos(-1.0)*std::pow(r_i,3)*_df->Get_rho_p());
     }
-    printf("rho_0 = %lf [kg/m3]\n",rho_0);
+    // printf("rho_0 = %lf [kg/m3]\n",rho_0);
     return rho_0;
 }
 

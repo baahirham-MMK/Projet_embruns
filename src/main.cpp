@@ -1,4 +1,4 @@
-#include"Spray.h"
+#include "Spray.h"
 
 int main(int argc, char** argv){
 
@@ -8,26 +8,37 @@ int main(int argc, char** argv){
         exit(0);
     }
 
-    const std::string data_file_name = argv[1];
+    MPI_Init(&argc, &argv);
 
-    DataFile* df = new DataFile(data_file_name);
-    Function* fct = new Function(df);
-    Spray* spray = new Spray(df,fct);
+        int Me;
+        MPI_Comm_rank(MPI_COMM_WORLD, &Me);
 
-    spray->Initialize();
-    spray->Display();
-    spray->Save("spray");
+        const std::string data_file_name = argv[1];
 
-    int i = 0;
-    while(spray->Get_t_m() < df->Get_T_f())
-    {
-        spray->Update();
+        DataFile* df = new DataFile(data_file_name);
+        Function* fct = new Function(df);
+        Spray* spray = new Spray(df,fct);
+
+        spray->Initialize();
+        // spray->Display();
         spray->Save("spray");
-    }
 
-    delete df, delete fct, delete spray;
+        int i = 0;
+        while(spray->Get_t_m() < df->Get_T_f())
+        {
+            spray->Update();
+            spray->Save("spray");
+        }
 
-    system("gnuplot ../res/visu.gnu");
+        spray->Display();
+
+        delete df, delete fct, delete spray;
+
+        if (Me == 0){
+            system("gnuplot ../res/visu.gnu");
+        }
+
+    MPI_Finalize();
 
     return 0;
 }

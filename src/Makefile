@@ -1,5 +1,5 @@
 # Compilateur utilisé
-CC=g++
+CC=mpic++
 
 # Options en mode optimisé - La variable DEBUG est définie comme fausse
 OPTIM_FLAG = -O3 -DNDEBUG -I -std=c++11

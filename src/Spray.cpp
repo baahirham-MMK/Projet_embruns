@@ -25,9 +25,12 @@ void Spray::Initialize()
     this->_T_p_m = 0.0;
 
     double Mtot = _fct->rho_0()*pow(_df->Get_L(),3);
-    int N;
+    int N, Me, Np;
+    double m_p_tot = 0.0;
+    MPI_Comm_rank(MPI_COMM_WORLD, &Me);
+    MPI_Comm_size(MPI_COMM_WORLD, &Np);
 
-    while(_m_p_m < Mtot) 
+    while(m_p_tot < Mtot) 
     {
         this->_spray.push_back(new Drop(this->_df, this->_fct));
         N = this->_spray.size();
@@ -38,8 +41,11 @@ void Spray::Initialize()
         this->_r_p_m += this->_spray[N-1]->Get_r_p();
         this->_m_p_m += this->_spray[N-1]->Get_m_p();
         this->_T_p_m += this->_spray[N-1]->Get_T_p();
+        MPI_Allreduce(&this->_m_p_m, &m_p_tot, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     }
-    printf("Nombre de goutte : %d\n",N);
+    // printf("Me = %d, Nombre de goutte : %d\n", Me, N);
+    // printf("Me = %d, Mtot = %e, m_p_tot = %e\n", Me, Mtot, m_p_tot);
+
     this->_t_m *= (1./double(N));
     this->_x_p_m *= (1./double(N));
     this->_v_p_m *= (1./double(N));
@@ -90,15 +96,36 @@ void Spray::Display()
 
 void Spray::Save(std::string n_drop)
 {
+    int Np, Me;
+    MPI_Comm_rank(MPI_COMM_WORLD, &Me);
+    MPI_Comm_size(MPI_COMM_WORLD, &Np);
+    double t_m_tot(0.0), x_p_m_tot(0.0), v_p_m_tot(0.0), r_p_m_tot(0.0), m_p_m_tot(0.0), T_p_m_tot(0.0);
+
     std::string n_file = "../res/" + n_drop + ".dat";
+
+    MPI_Allreduce(&this->_t_m, &t_m_tot, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(&this->_x_p_m, &x_p_m_tot, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(&this->_v_p_m, &v_p_m_tot, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(&this->_r_p_m, &r_p_m_tot, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(&this->_m_p_m, &m_p_m_tot, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(&this->_T_p_m, &T_p_m_tot, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+
+    t_m_tot /= double(Np);
+    x_p_m_tot /= double(Np);
+    v_p_m_tot /= double(Np);
+    r_p_m_tot /= double(Np);
+    m_p_m_tot /= double(Np);
+    T_p_m_tot /= double(Np);
     
-    std::ofstream monflux;
-    monflux.open(n_file, std::ios::app);  
-    if (monflux.is_open()) {
-        monflux << this->_t_m << " " << this->_x_p_m << " " << this->_v_p_m << " " << this->_r_p_m*1e6 << " " << this->_m_p_m*1e9 << " " << this->_T_p_m - 273.15 << std::endl;
-        monflux.close();
-    } else {
-        std::cerr << "Erreur : impossible d'ouvrir le fichier " << n_file << std::endl;
+    if (Me == 0){
+        std::ofstream monflux;
+        monflux.open(n_file, std::ios::app);  
+        if (monflux.is_open()) {
+            monflux << this->_t_m << " " << x_p_m_tot << " " << v_p_m_tot << " " << r_p_m_tot*1e6 << " " << m_p_m_tot*1e9 << " " << T_p_m_tot - 273.15 << std::endl;
+            monflux.close();
+        } else {
+            std::cerr << "Erreur : impossible d'ouvrir le fichier " << n_file << std::endl;
+        }
     }
 }
 
