@@ -18,7 +18,7 @@ Spray::~Spray(){
 void Spray::Initialize()
 {
 
-    this->_t = 0.0;
+    this->_t_m = 0.0;
     this->_x_p_m = 0.0;
     this->_v_p_m = 0.0;
     this->_r_p_m = 0.0;
@@ -52,7 +52,7 @@ void Spray::Initialize()
 void Spray::Update()
 {
 
-    this->_t = 0.0;
+    this->_t_m = 0.0;
     this->_x_p_m = 0.0;
     this->_v_p_m = 0.0;
     this->_r_p_m = 0.0;
@@ -63,7 +63,7 @@ void Spray::Update()
     for (int i = 0; i < N; ++i) 
     {
         this->_spray[i]->Update();
-        this->_t += this->_spray[i]->Get_t();
+        this->_t_m += this->_spray[i]->Get_t();
         this->_x_p_m += this->_spray[i]->Get_x_p();
         this->_v_p_m += this->_spray[i]->Get_v_p();
         this->_r_p_m += this->_spray[i]->Get_r_p();
@@ -80,7 +80,7 @@ void Spray::Update()
 
 void Spray::Display()
 {
-    std::cout << "t = " << this->_t << " [s] " << std::endl;
+    std::cout << "t = " << this->_t_m << " [s] " << std::endl;
     std::cout << "x_p = " << this->_x_p_m << " [m] " << std::endl;
     std::cout << "v_p = " << this->_v_p_m << " [m/s] " << std::endl;
     std::cout << "r_p = " << this->_r_p_m << " [m] " << std::endl;
@@ -95,7 +95,7 @@ void Spray::Save(std::string n_drop)
     std::ofstream monflux;
     monflux.open(n_file, std::ios::app);  
     if (monflux.is_open()) {
-        monflux << this->_t << " " << this->_x_p_m << " " << this->_v_p_m << " " << this->_r_p_m*1e6 << " " << this->_m_p_m*1e9 << " " << this->_T_p_m - 273.15 << std::endl;
+        monflux << this->_t_m << " " << this->_x_p_m << " " << this->_v_p_m << " " << this->_r_p_m*1e6 << " " << this->_m_p_m*1e9 << " " << this->_T_p_m - 273.15 << std::endl;
         monflux.close();
     } else {
         std::cerr << "Erreur : impossible d'ouvrir le fichier " << n_file << std::endl;

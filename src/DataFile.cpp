@@ -25,7 +25,6 @@ DataFile::DataFile(std::string file_name)
    this->_p_0 = toml::find<double>(parameter, "p_0");
    this->_Salinity_w = toml::find<double>(parameter, "Salinity_w");
    this->_Salinity_p = toml::find<double>(parameter, "Salinity_p");
-   this->_r_p_0 = toml::find<double>(parameter, "r_p_0");
    this->_Delta_v = toml::find<double>(parameter, "Delta_v");
    this->_alpha_c = toml::find<double>(parameter, "alpha_c");
    this->_Delta_T = toml::find<double>(parameter, "Delta_T");

@@ -16,8 +16,9 @@ void Drop::Initialize()
     this->_t = 0.0;
     this->_x_p = u1(seed);
     this->_v_p = 0.0;
-    this->_r_p = u2(seed);
+    this->_r_p = _fct->acceptation_rejet(seed);
     this->_m_p = (4.0/3.0)*std::acos(-1.0)*std::pow(this->_r_p,3)*_df->Get_rho_p();
+    this->_m_s = (4.0/3.0)*std::acos(-1.0)*std::pow(this->_r_p,3)*_df->Get_rho_p()*_df->Get_Salinity_p()/1000.0;
     this->_T_p = _df->Get_T_p_0();
 }
 
@@ -51,21 +52,22 @@ void Drop::Update()
     switch (_df->Get_cas())
     {
     case 1:
-        this->_x_p += dt * v_p_old;
+        if (this->_x_p <= _df->Get_L()) this->_x_p += dt * v_p_old;
+        else this->_x_p = 0.0;
         this->_v_p += (dt/m_p_old) * _fct->F(r_p_old,v_p_old,m_p_old);
-        this->_r_p += dt * _fct->R(r_p_old,v_p_old,m_p_old,T_p_old);
-        this->_m_p += dt * _fct->M(r_p_old,v_p_old,m_p_old,T_p_old);
-        this->_T_p += dt * _fct->T(r_p_old,v_p_old,m_p_old,T_p_old);
+        this->_r_p += dt * _fct->R(r_p_old,v_p_old,m_p_old,this->_m_s,T_p_old);
+        this->_m_p += dt * _fct->M(r_p_old,v_p_old,m_p_old, this->_m_s,T_p_old);
+        this->_T_p += dt * _fct->T(r_p_old,v_p_old,m_p_old,this->_m_s,T_p_old);
 
         break;
     default:
         this->_x_p += dt * v_p_old;
         this->_v_p = this->_v_p * exp(-dt/_fct->tau_p(this->_r_p, this->_m_p)) + _df->Get_U_air() 
                                                 *(1 - exp(-dt/_fct->tau_p(this->_r_p, this->_m_p)) );    
-        this->_r_p += dt * _fct->R(r_p_old,v_p_old,m_p_old,T_p_old);
-        this->_m_p += dt * _fct->M(r_p_old,v_p_old,m_p_old,T_p_old);
+        this->_r_p += dt * _fct->R(r_p_old,v_p_old,m_p_old,this->_m_s,T_p_old);
+        this->_m_p += dt * _fct->M(r_p_old,v_p_old,m_p_old,this->_m_s,T_p_old);
         this->_T_p = this->_T_p*exp(-dt/_fct->tau_t(this->_r_p, this->_v_p, this->_m_p, this->_T_p))
-                                            +_fct->b(this->_r_p, this-> _v_p, this->_m_p, this->_T_p)
+                                            +_fct->b(this->_r_p, this-> _v_p, this->_m_p, this->_m_s, this->_T_p)
                             *(1 - exp(-dt/_fct->tau_t(this->_r_p, this->_v_p, this->_m_p, this->_T_p)));
 
 
