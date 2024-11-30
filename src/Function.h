@@ -43,22 +43,16 @@ namespace Function {
     #pragma acc routine seq
     double tau_t(const DataFile& df, const double r_p, const double v_p, const double m_p, const double T_p);
 
-    #pragma acc routine seq
     double dFdr(const DataFile& df, const double R);
 
-    #pragma acc routine seq
     double vp4(const DataFile& df, const double R);
 
-    #pragma acc routine seq
     double Vdp(const DataFile& df, const double Vt_p);
 
-    #pragma acc routine seq
     double dCd_r(const DataFile& df, const double dFdr, const double Vdp);
 
-    #pragma acc routine seq
     double normalised_N_r(const DataFile& df, const double dCdr);
 
-    #pragma acc routine seq
     double rho_0(const DataFile& df); 
 
     double acceptation_rejet(const DataFile& df, std::default_random_engine& seed);
