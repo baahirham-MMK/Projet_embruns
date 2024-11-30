@@ -1,24 +1,41 @@
-#ifndef _SPRAY_H
+#ifndef SPRAY_H
+#define SPRAY_H
 
-#include "Drop.h"
-// Définition de la classe
+#include "DataFile.h"
+#include "Function.h"
+#include <vector>
 
 class Spray {
+public:
+    Spray(DataFile* df);
+    ~Spray();
 
-    private:
-        DataFile* _df;
-        Function* _fct;
-        std::vector<Drop*> _spray;
-        double _t_m, _x_p_m, _v_p_m, _m_p_m, _r_p_m, _T_p_m;
+    void Initialize();
+    void Update();
+    void Display();
+    void Save(std::string n_drop);
 
-    public: // Méthodes et opérateurs de la classe
-        Spray(DataFile* df, Function* fct);
-        ~Spray();
-        void Initialize();
-        void Update(); 
-        void Display();
-        void Save(std::string n_sol);
+private:
+    DataFile* _df;
+    int _N; // Number of droplets
+
+    // Particle properties
+    std::vector<double> _t;
+    std::vector<double> _x_p;
+    std::vector<double> _v_p;
+    std::vector<double> _r_p;
+    std::vector<double> _m_p;
+    std::vector<double> _m_s;
+    std::vector<double> _T_p;
+
+    // Mean values
+    double _t_m;
+    double _x_p_m;
+    double _v_p_m;
+    double _r_p_m;
+    double _m_p_m;
+    double _T_p_m;
 };
 
-#define _SPRAY_H
-#endif
+#endif // SPRAY_H
+
