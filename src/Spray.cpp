@@ -127,7 +127,7 @@ void Spray::Save(std::string n_drop)
     m_p_m_tot /= double(Np);
     T_p_m_tot /= double(Np);
 
-    humidity = (1.0-_df->Get_q10())/_df->Get_rho_air()*this->_M_s*5000;
+    humidity = (1.0-_df->Get_q10())/_df->Get_rho_air()*this->_M_s;
     QQ = (_df->Get_q10()+humidity)/(1-(_df->Get_q10()+humidity))/_df->Get_rs10();
     
     if (Me == 0){
