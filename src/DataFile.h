@@ -44,8 +44,42 @@ class DataFile {
    const double Get_T_p_0() const {return _T_p_0_celcius + 273.15;};
    const double Get_qs0() const {return 0.62197*611.2/Get_p_0()*std::exp((17.67*(Get_T_p_0()-273.15))/(Get_T_p_0()-29.66));};
    const double Get_rs0() const {return Get_qs0()/(1-Get_qs0());};
+   const double Get_rs10() const {
+      double p10, pot_T10, qs10, rs10, r10, q10, Tv10, rhoa10, ke10;
+      p10 = Get_p_0()-Get_rho_air()*Get_g()*10.0; 
+      pot_T10 = Get_T_air(); 
+         for (int i = 1; i <=10; ++i){
+            qs10 = 0.62197*611.2/p10*std::exp((17.67*(pot_T10-273.15))/(pot_T10-29.66));
+            rs10 = qs10/(1-qs10);
+            r10 = Get_Q_RH()*rs10; 
+            q10 = r10/(1.0+r10);
+            Tv10 = pot_T10*(1+0.6078*q10); 
+            rhoa10 = 1.2929*273.15/Tv10; 
+            p10 = Get_p_0()-0.5*(rhoa10+Get_rho_air())*Get_g()*10;
+            ke10 = 2.0/7.0*((1-q10+q10/.62197)/(1-q10+8*q10/7/.62197));
+            pot_T10 = Get_T_air()*std::pow(Get_p_0()/p10,ke10);
+         }
+      return rs10;
+   };
    const double Get_r0() const {return 98.0/100.0*Get_rs0();};
    const double Get_q0() const {return Get_r0()/(1+Get_r0());};
+   const double Get_q10() const {
+      double p10, pot_T10, qs10, rs10, r10, q10, Tv10, rhoa10, ke10;
+      p10 = Get_p_0()-Get_rho_air()*Get_g()*10.0; 
+      pot_T10 = Get_T_air(); 
+         for (int i = 1; i <=10; ++i){
+            qs10 = 0.62197*611.2/p10*std::exp((17.67*(pot_T10-273.15))/(pot_T10-29.66));
+            rs10 = qs10/(1-qs10);
+            r10 = Get_Q_RH()*rs10; 
+            q10 = r10/(1.0+r10);
+            Tv10 = pot_T10*(1+0.6078*q10); 
+            rhoa10 = 1.2929*273.15/Tv10; 
+            p10 = Get_p_0()-0.5*(rhoa10+Get_rho_air())*Get_g()*10;
+            ke10 = 2.0/7.0*((1-q10+q10/.62197)/(1-q10+8*q10/7/.62197));
+            pot_T10 = Get_T_air()*std::pow(Get_p_0()/p10,ke10);
+         }
+      return q10;
+   };
    const double Get_Tv0() const {return Get_T_p_0()*(1+0.6078*Get_q0());};
    const double Get_rho_air() const {return 1.2929*273.15/Get_Tv0();};
    const double Get_nu_air() const {return 1.33e-5 +(0.0084*(Get_Tv0()-273.15))*1e-5;};

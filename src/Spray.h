@@ -9,7 +9,7 @@ class Spray {
         DataFile* _df;
         Function* _fct;
         std::vector<Drop*> _spray;
-        double _t_m, _x_p_m, _v_p_m, _m_p_m, _r_p_m, _T_p_m;
+        double _t_m, _x_p_m, _v_p_m, _m_p_m, _r_p_m, _T_p_m, _M_n, _M_0, _M_s;
 
     public: // Méthodes et opérateurs de la classe
         Spray(DataFile* df, Function* fct);
