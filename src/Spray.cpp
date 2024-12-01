@@ -94,7 +94,10 @@ void Spray::Update()
 
     // Masse d'eau evaporée
     this->_Ms = this->_M0 - N*this->_m_p_m;
-    
+    if(this->_Ms < 0){
+        //std::cout << "Warning: Ms is negative " << std::endl;
+        this->_Ms = 0.0;
+    }
     
     // humidité supplementaire 
     this->_HUMIDITY = (1.0 - this->_q)/this->_rhod * this->_Ms;
