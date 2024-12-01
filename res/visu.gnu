@@ -30,3 +30,9 @@ set ylabel "Masse (m) [1e-9 kg]"
 plot "../res/spray.dat" using 1:5 with lines title "m(t) [kg]"
 
 set output
+
+set terminal pngcairo size 800,600
+set output '../res/graph_humidity.png'
+set xlabel "Temps (t)"
+set ylabel "Humiditée relative (m) [1e-9 kg]"
+plot "../res/spray.dat" using 1:8 with lines title "HR [%]"

@@ -3,7 +3,7 @@
 
 
 Spray::Spray(DataFile* df, Function* fct) :
-_df(df), _fct(fct)
+_df(df), _fct(fct), _Ms(0.0), _QQ(0.0)
 {
 
 } 
@@ -26,7 +26,20 @@ void Spray::Initialize()
     this->_T_p_m = 0.0;
 
     double Mtot = _fct->rho_0()*pow(_df->Get_L(),3);
+    this->_M0 = Mtot;
     int N;
+
+    this->_Abstemp10 = _df->Get_T_air_celcius()+273.15;
+    this->_qs10 = 0.62197 * 611.2 / _df->Get_p_0() * exp((17.67 * (this->_Abstemp10 - 273.15)) / (this->_Abstemp10 - 29.66));
+    this->_rs10 = _qs10 / (1 - _qs10);
+    this->_r10 = (_df->Get_Q_RH()/100.0)*this->_rs10;
+    this->_q10 = this->_r10 / (1 + this->_r10);
+    this->_q = this->_q10;
+    this->_rhod = 1.2929*273.13/this->_Abstemp10;
+
+    this->_HUMIDITY = 0.0;
+
+
 
     while(_m_p_m < Mtot) 
     {
@@ -58,6 +71,7 @@ void Spray::Update()
     this->_r_p_m = 0.0;
     this->_m_p_m = 0.0;
     this->_T_p_m = 0.0;
+    this->_Ms = 0.0;
     int N = this->_spray.size();
     
     for (int i = 0; i < N; ++i) 
@@ -70,12 +84,22 @@ void Spray::Update()
         this->_m_p_m += this->_spray[i]->Get_m_p();
         this->_T_p_m += this->_spray[i]->Get_T_p();
     }
+    
     this->_t_m *= (1./double(N));
     this->_x_p_m *= (1./double(N));
     this->_v_p_m *= (1./double(N));
     this->_r_p_m *= (1./double(N));
     this->_m_p_m *= (1./double(N));
     this->_T_p_m *= (1./double(N));
+
+    // Masse d'eau evaporée
+    this->_Ms = this->_M0 - N*this->_m_p_m;
+    
+    
+    // humidité supplementaire 
+    this->_HUMIDITY = (1.0 - this->_q)/this->_rhod * this->_Ms;
+    this->_QQ = (this->_q + this->_HUMIDITY)/(1.0-(this->_q +this->_HUMIDITY))/this->_rs10;
+
 }
 
 void Spray::Display()
@@ -95,7 +119,7 @@ void Spray::Save(std::string n_drop)
     std::ofstream monflux;
     monflux.open(n_file, std::ios::app);  
     if (monflux.is_open()) {
-        monflux << this->_t_m << " " << this->_x_p_m << " " << this->_v_p_m << " " << this->_r_p_m*1e6 << " " << this->_m_p_m*1e9 << " " << this->_T_p_m - 273.15 << std::endl;
+        monflux << this->_t_m << " " << this->_x_p_m << " " << this->_v_p_m << " " << this->_r_p_m*1e6 << " " << this->_m_p_m*1e9 << " " << this->_T_p_m - 273.15 <<" "<<this->_Ms<<" "<< this->_QQ<<std::endl;
         monflux.close();
     } else {
         std::cerr << "Erreur : impossible d'ouvrir le fichier " << n_file << std::endl;
