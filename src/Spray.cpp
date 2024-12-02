@@ -25,6 +25,7 @@ void Spray::Initialize()
     this->_T_p_m = 0.0;
     this->_M_n = 0.0;
     this->_M_s = 0.0;
+    this->_Vol = 0.0;
 
     double Mtot = _fct->rho_0()*pow(_df->Get_L(),3);
     int N, Me, Np;
@@ -43,6 +44,7 @@ void Spray::Initialize()
         this->_m_p_m += this->_spray[N-1]->Get_m_p();
         this->_T_p_m += this->_spray[N-1]->Get_T_p();
         MPI_Allreduce(&this->_m_p_m, &this->_M_n, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+        MPI_Allreduce(&this->_r_p_m, &this->_Vol, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     }
     printf("Me = %d, Nombre de goutte : %d\n", Me, N);
     if(Me == 0){
@@ -68,6 +70,7 @@ void Spray::Update()
     this->_m_p_m = 0.0;
     this->_T_p_m = 0.0;
     this->_M_n = 0.0;
+    this->_Vol = 0.0;
 
     int N = this->_spray.size();
     
@@ -85,6 +88,7 @@ void Spray::Update()
     this->_t_m *= (1./double(N));
     this->_x_p_m *= (1./double(N));
     this->_v_p_m *= (1./double(N));
+    MPI_Allreduce(&this->_r_p_m, &this->_Vol, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     this->_r_p_m *= (1./double(N));
     MPI_Allreduce(&this->_m_p_m, &this->_M_n, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     this->_m_p_m *= (1./double(N));
@@ -127,7 +131,7 @@ void Spray::Save(std::string n_drop)
     m_p_m_tot /= double(Np);
     T_p_m_tot /= double(Np);
 
-    humidity = (1.0-_df->Get_q10())/_df->Get_rho_air()*this->_M_s;
+    humidity = (1.0-_df->Get_q10())/_df->Get_rho_air()*(this->_M_s/this->_Vol);
     QQ = (_df->Get_q10()+humidity)/(1-(_df->Get_q10()+humidity))/_df->Get_rs10();
     
     if (Me == 0){
