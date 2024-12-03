@@ -32,7 +32,7 @@ void Spray::Initialize()
     this->_Abstemp10 = _df->Get_T_air_celcius()+273.15;
     this->_qs10 = 0.62197 * 611.2 / _df->Get_p_0() * exp((17.67 * (this->_Abstemp10 - 273.15)) / (this->_Abstemp10 - 29.66));
     this->_rs10 = _qs10 / (1 - _qs10);
-    this->_r10 = (_df->Get_Q_RH()/100.0)*this->_rs10;
+    this->_r10 = (_df->Get_Q_RH())*this->_rs10;
     this->_q10 = this->_r10 / (1 + this->_r10);
     this->_q = this->_q10;
     this->_rhod = 1.2929*273.13/this->_Abstemp10;
@@ -97,7 +97,8 @@ void Spray::Update()
     
     
     // humidité supplementaire 
-    this->_HUMIDITY = (1.0 - this->_q)/this->_rhod * this->_Ms;
+    double L = _df->Get_L();
+    this->_HUMIDITY = ((1.0 - this->_q)/this->_rhod * this->_Ms); ///(_df->Get_rho_air_sec()*pow(L,3));
     this->_QQ = (this->_q + this->_HUMIDITY)/(1.0-(this->_q +this->_HUMIDITY))/this->_rs10;
 
 }
