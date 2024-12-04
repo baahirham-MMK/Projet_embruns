@@ -184,13 +184,13 @@ double Function::dCd_r(const double dFdr, const double Vdp) const {
 }
 
 double Function::normalised_N_r(const double dCdr) const {
-    double K(8.55422e+08);
+    double K(8.29412e+08);
     return dCdr/K;
 }
 
 double Function::acceptation_rejet(std::default_random_engine& seed) const {
 
-    double max(19412.8);
+    double max(19933.5);
     double a(1e-6), b(1e-3), c((b-a)*max), x, y;
 
     std::uniform_real_distribution<double> u1{0, 1}, u2{a, b};

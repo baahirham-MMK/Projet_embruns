@@ -58,7 +58,8 @@ void Spray::Initialize()
     this->_m_p_m *= (1./double(N));
     this->_T_p_m *= (1./double(N));
     this->_M_0 = this->_M_n;
-    this->_M_s = this->_M_0 - this->_M_n;
+    this->_Vol = 4.0/3.0*std::acos(-1.0)*std::pow(this->_Vol,3);
+    this->_M_s = (this->_M_0 - this->_M_n);
 }
 
 void Spray::Update()
@@ -93,7 +94,8 @@ void Spray::Update()
     MPI_Allreduce(&this->_m_p_m, &this->_M_n, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     this->_m_p_m *= (1./double(N));
     this->_T_p_m *= (1./double(N));
-    this->_M_s = this->_M_0 - this->_M_n;
+    this->_Vol = 4.0/3.0*std::acos(-1.0)*std::pow(this->_Vol,3);
+    this->_M_s = (this->_M_0 - this->_M_n);
 }
 
 void Spray::Display()
@@ -113,7 +115,7 @@ void Spray::Save(std::string n_drop)
     int Np, Me;
     MPI_Comm_rank(MPI_COMM_WORLD, &Me);
     MPI_Comm_size(MPI_COMM_WORLD, &Np);
-    double t_m_tot(0.0), x_p_m_tot(0.0), v_p_m_tot(0.0), r_p_m_tot(0.0), m_p_m_tot(0.0), T_p_m_tot(0.0), humidity, QQ;
+    double t_m_tot(0.0), x_p_m_tot(0.0), v_p_m_tot(0.0), r_p_m_tot(0.0), m_p_m_tot(0.0), T_p_m_tot(0.0), humidity, abs_hum, QQ;
 
     std::string n_file = "../res/" + n_drop + ".dat";
 
@@ -131,7 +133,7 @@ void Spray::Save(std::string n_drop)
     m_p_m_tot /= double(Np);
     T_p_m_tot /= double(Np);
 
-    humidity = (1.0-_df->Get_q10())/_df->Get_rho_air()*(this->_M_s/this->_Vol);
+    humidity = (1.0-_df->Get_q10())/_df->Get_rho_air()*(this->_M_s/(std::pow(_df->Get_L(),3)));
     QQ = (_df->Get_q10()+humidity)/(1-(_df->Get_q10()+humidity))/_df->Get_rs10();
     
     if (Me == 0){
