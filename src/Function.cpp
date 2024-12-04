@@ -198,7 +198,7 @@ double Function::acceptation_rejet(std::default_random_engine& seed) const {
     x = u1(seed);
     y = u2(seed);
 
-    while (x > (b-a)*normalised_N_r(dCd_r(dFdr(y),Vdp(y)))/c){
+    while (x > (b-a)*normalised_N_r(dCd_r(dFdr(y),Vdp(vp4(y))))/c){
         x = u1(seed);
         y = u2(seed);
     }
@@ -220,7 +220,7 @@ double Function::rho_0() const
     for (int i = 0; i < num-1; ++i) {
         r_i = (start * std::pow(factor, i));
         r_ip1 = (start * std::pow(factor, i+1));
-        rho_0 += (r_ip1-r_i)*dCd_r(dFdr(r_i),Vdp(r_i))*((4.0/3.0)*std::acos(-1.0)*std::pow(r_i,3)*_df->Get_rho_p());
+        rho_0 += (r_ip1-r_i)*dCd_r(dFdr(r_i),Vdp(vp4(r_i)))*((4.0/3.0)*std::acos(-1.0)*std::pow(r_i,3)*_df->Get_rho_p());
     }
     // printf("rho_0 = %lf [kg/m3]\n",rho_0);
     return rho_0;
