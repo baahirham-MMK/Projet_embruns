@@ -39,3 +39,19 @@ plot "../res/spray.dat" using 1:8 with lines title "Humidité relative (t)"
 
 set output
 
+set terminal pngcairo size 800,600
+set output '../res/vitesse_rel.png'
+set xlabel "Temps (t)"
+set ylabel "U_s + U_{air} [m/s]"
+plot "../res/spray.dat" using 1:9 with lines title "Vitesse relative (t)"
+
+set output
+
+set terminal pngcairo size 800,600
+set output '../res/chaleur_sensible.png'
+set xlabel "Temps (t)"
+set ylabel "T_s + T_{air} [°C]"
+plot "../res/spray.dat" using 1:10 with lines title "Chaleur sensible (t)"
+
+set output
+

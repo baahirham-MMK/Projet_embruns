@@ -94,6 +94,8 @@ class DataFile {
    const double Get_rho_p() const {return Get_rho_w() + Get_Salinity_p()*(0.824493-4.0899e-3*Get_T_p_0_celcius() +7.6438e-5*std::pow(Get_T_p_0_celcius(),2)-8.2467e-7*std::pow(Get_T_p_0_celcius(),3)+5.3875e-9*std::pow(Get_T_p_0_celcius(),4))+std::pow(Get_Salinity_p(),(3./2.))*(-5.72466e-3+1.0227e-4*Get_T_p_0_celcius() -1.6546e-6*std::pow(Get_T_p_0_celcius(),2)) +4.8314e-4*std::pow(Get_Salinity_p(),2);};
    const double Get_c_p_s() const {return 4217.4 -3.720283*(Get_T_air()-273.15)+0.1412855*std::pow((Get_T_air()-273.15),2)-2.654387e-3*std::pow((Get_T_air()-273.15),3) +2.093236e-5*std::pow((Get_T_air()-273.15),4) + Get_Salinity_p()*(-7.6444+0.107276*(Get_T_air()-273.15)-1.3839e-3*std::pow(Get_T_p_0_celcius(),2))+std::pow(Get_Salinity_p(),(3/2))*(0.17709-4.0772e-3*(Get_T_air()-273.15)+5.3539e-5*std::pow(Get_T_p_0_celcius(),2));};
    const double Get_c_p_air_sec() const {return 1.9327e-10*std::pow(Get_T_p_0(),4)-7.9999e-7*std::pow(Get_T_p_0(),3)+1.1407e-3*std::pow(Get_T_p_0(),2)-4.4890e-1*Get_T_p_0()+1.0575e+3;};
+   const double Get_c_p_air() const {return Get_c_p_air_sec()*(1+0.84*Get_q0());};
+   const double Get_c_v_air() const {return Get_c_p_air()*(7.0/5.0);};
    const double Get_rho_air_sec() const {return 1.2929*273.13/Get_T_air();};
    const int Get_cas() const {return _cas;};
    const double Get_T_f() const {return _T_f;};

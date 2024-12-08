@@ -25,7 +25,11 @@ void Spray::Initialize()
     this->_T_p_m = 0.0;
     this->_M_n = 0.0;
     this->_M_s = 0.0;
-    this->_Vol = 0.0;
+    this->_U_n = 0.0;
+    this->_U_s = 0.0;
+    double pm, mT;
+    this->_T_n = 0.0;
+    this->_T_ss = 0.0;
 
     double Mtot = _fct->rho_0()*pow(_df->Get_L(),3);
     int N, Me, Np;
@@ -43,8 +47,11 @@ void Spray::Initialize()
         this->_r_p_m += this->_spray[N-1]->Get_r_p();
         this->_m_p_m += this->_spray[N-1]->Get_m_p();
         this->_T_p_m += this->_spray[N-1]->Get_T_p();
+        pm = this->_spray[N-1]->Get_m_p() * this->_spray[N-1]->Get_v_p();
+        mT = this->_spray[N-1]->Get_m_p() * this->_spray[N-1]->Get_T_p();
         MPI_Allreduce(&this->_m_p_m, &this->_M_n, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-        MPI_Allreduce(&this->_r_p_m, &this->_Vol, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+        MPI_Allreduce(&pm, &this->_U_n, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+        MPI_Allreduce(&mT, &this->_T_n, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     }
     printf("Me = %d, Nombre de goutte : %d\n", Me, N);
     if(Me == 0){
@@ -58,8 +65,11 @@ void Spray::Initialize()
     this->_m_p_m *= (1./double(N));
     this->_T_p_m *= (1./double(N));
     this->_M_0 = this->_M_n;
-    this->_Vol = 4.0/3.0*std::acos(-1.0)*std::pow(this->_Vol,3);
     this->_M_s = (this->_M_0 - this->_M_n);
+    this->_U_0 = this->_U_n;
+    this->_U_s = (this->_U_0 - this->_U_n)/_df->Get_rho_air();
+    this->_T_0 = this->_T_n;
+    this->_T_ss = _df->Get_c_p_s()*(this->_T_0 - this->_T_n)/(_df->Get_rho_air()*_df->Get_c_v_air());
 }
 
 void Spray::Update()
@@ -72,8 +82,10 @@ void Spray::Update()
     this->_T_p_m = 0.0;
     this->_M_n = 0.0;
     this->_Vol = 0.0;
+    this->_U_n = 0.0;
 
     int N = this->_spray.size();
+    double pm, mT;
     
     for (int i = 0; i < N; ++i) 
     {
@@ -84,18 +96,22 @@ void Spray::Update()
         this->_r_p_m += this->_spray[i]->Get_r_p();
         this->_m_p_m += this->_spray[i]->Get_m_p();
         this->_T_p_m += this->_spray[i]->Get_T_p();
+        pm = this->_spray[i]->Get_m_p() * this->_spray[i]->Get_v_p();
+        mT = this->_spray[i]->Get_m_p() * this->_spray[i]->Get_T_p();
+        MPI_Allreduce(&pm, &this->_U_n, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+         MPI_Allreduce(&mT, &this->_T_n, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     }
 
     this->_t_m *= (1./double(N));
     this->_x_p_m *= (1./double(N));
     this->_v_p_m *= (1./double(N));
-    MPI_Allreduce(&this->_r_p_m, &this->_Vol, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     this->_r_p_m *= (1./double(N));
     MPI_Allreduce(&this->_m_p_m, &this->_M_n, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     this->_m_p_m *= (1./double(N));
     this->_T_p_m *= (1./double(N));
-    this->_Vol = 4.0/3.0*std::acos(-1.0)*std::pow(this->_Vol,3);
     this->_M_s = (this->_M_0 - this->_M_n);
+    this->_U_s = (this->_U_s - _U_n)/_df->Get_rho_air();
+    this->_T_ss = _df->Get_c_p_s()*(this->_T_0 - this->_T_n)/(_df->Get_rho_air()*_df->Get_c_v_air());
 }
 
 void Spray::Display()
@@ -140,7 +156,7 @@ void Spray::Save(std::string n_drop)
         std::ofstream monflux;
         monflux.open(n_file, std::ios::app);  
         if (monflux.is_open()) {
-            monflux << this->_t_m << " " << x_p_m_tot << " " << v_p_m_tot << " " << r_p_m_tot*1e6 << " " << m_p_m_tot*1e9 << " " << T_p_m_tot - 273.15 << " " << this->_M_s << " " << QQ*100 << std::endl;
+            monflux << this->_t_m << " " << x_p_m_tot << " " << v_p_m_tot << " " << r_p_m_tot*1e6 << " " << m_p_m_tot*1e9 << " " << T_p_m_tot - 273.15 << " " << this->_M_s << " " << QQ*100 << " " << this->_U_s + _df->Get_U_air() << " " << _df->Get_T_air_celcius() + this->_T_ss << std::endl;
             monflux.close();
         } else {
             std::cerr << "Erreur : impossible d'ouvrir le fichier " << n_file << std::endl;
