@@ -156,7 +156,7 @@ void Spray::Save(std::string n_drop)
         std::ofstream monflux;
         monflux.open(n_file, std::ios::app);  
         if (monflux.is_open()) {
-            monflux << this->_t_m << " " << x_p_m_tot << " " << v_p_m_tot << " " << r_p_m_tot*1e6 << " " << m_p_m_tot*1e9 << " " << T_p_m_tot - 273.15 << " " << this->_M_s << " " << QQ*100 << " " << this->_U_s + _df->Get_U_air() << " " << _df->Get_T_air_celcius() + this->_T_ss << std::endl;
+            monflux << this->_t_m << " " << x_p_m_tot << " " << v_p_m_tot << " " << r_p_m_tot*1e6 << " " << m_p_m_tot*1e9 << " " << T_p_m_tot - 273.15 << " " << _df->Get_T_air_celcius() - _df->Get_L_v()*this->_M_s/(std::pow(_df->Get_L(),3)*_df->Get_c_v_air()) << " " << QQ*100 << " " << this->_U_s + _df->Get_U_air() << " " << _df->Get_T_air_celcius() - this->_T_ss << std::endl;
             monflux.close();
         } else {
             std::cerr << "Erreur : impossible d'ouvrir le fichier " << n_file << std::endl;

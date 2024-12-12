@@ -32,6 +32,14 @@ plot "../res/spray.dat" using 1:5 with lines title "m(t) [kg]"
 set output
 
 set terminal pngcairo size 800,600
+set output '../res/chaleur_latente.png'
+set xlabel "Temps (t)"
+set ylabel "T_{air} + T_{S,L} [°C]"
+plot "../res/spray.dat" using 1:7 with lines title "Chaleur latente (t)"
+
+set output
+
+set terminal pngcairo size 800,600
 set output '../res/humidite.png'
 set xlabel "Temps (t)"
 set ylabel "Humidité relative [%]"
@@ -43,14 +51,15 @@ set terminal pngcairo size 800,600
 set output '../res/vitesse_rel.png'
 set xlabel "Temps (t)"
 set ylabel "U_s + U_{air} [m/s]"
-plot "../res/spray.dat" using 1:9 with lines title "Vitesse relative (t)"
+plot "../res/spray.dat" using 1:9 with lines title "Vitesse (t)"
 
 set output
 
 set terminal pngcairo size 800,600
 set output '../res/chaleur_sensible.png'
 set xlabel "Temps (t)"
-set ylabel "T_s + T_{air} [°C]"
+set ylabel "T_{air} + T_{S,S}  [°C]"
+set yrange [18.0000:18.0030]
 plot "../res/spray.dat" using 1:10 with lines title "Chaleur sensible (t)"
 
 set output
